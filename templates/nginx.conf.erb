@@ -12,13 +12,19 @@ env PIDFILE=/var/run/nginx.pid
  
 # Needed to allow Nginx to start, however, the wrong PID will be tracked
 expect fork
- 
-# Test the nginx configuration (Upstart will not proceed if this fails)
-pre-start exec $DAEMON -t
- 
+respawn
+respawn limit 10 5
+
 # Ensure nginx is shutdown gracefully
 # Upstart will be tracking the wrong PID so the following is needed to stop nginx
 post-stop exec start-stop-daemon --stop --pidfile $PIDFILE --name nginx --exec $DAEMON --signal QUIT
  
+pre-start script
+  $DAEMON -t
+  if [ $? -ne 0 ]
+    then exit $?
+  fi
+end script
+
 # Start Nginx
 exec $DAEMON

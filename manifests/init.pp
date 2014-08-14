@@ -28,14 +28,15 @@ class nginx {
     owner => 'root',
     group => 'root',
     mode => 'u=rw,go=r',
+    notify => Service['nginx']
     content => template("${module_name}/nginx.conf.erb"),
   }
 
-  service {'start nginx':
-    name => 'nginx',
+  service {'nginx':
     ensure => running,
     provider => upstart
   }
 
-  Package['nginx'] -> Exec['stop nginx'] -> File['/etc/init/nginx.conf'] -> Service['start nginx']
+  Package['nginx'] -> Exec['stop nginx'] -> File['/etc/init/nginx.conf']
+
 }
