@@ -1,0 +1,7 @@
+name "puppetlabs-nginx"
+version "0.0.1"
+source "git://github.com/alessani/puppet-nginx"
+author "Matteo Alessani"
+license "Apache"
+summary "Manage nginx"
+description "Manage nginx"
