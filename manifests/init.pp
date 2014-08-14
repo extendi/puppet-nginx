@@ -28,7 +28,7 @@ class nginx {
     owner => 'root',
     group => 'root',
     mode => 'u=rw,go=r',
-    notify => Service['nginx']
+    notify => Service['nginx'],
     content => template("${module_name}/nginx.conf.erb"),
   }
 
