@@ -1,4 +1,8 @@
-class nginx {
+class nginx (
+  $user = 'www-data',
+  $worker_processes = 16,
+  $worker_connections = 1024
+) {
 
   package {'nginx':
     ensure => present,
@@ -32,11 +36,19 @@ class nginx {
     content => template("${module_name}/nginx.conf.erb"),
   }
 
+  file {'/etc/nginx/nginx.conf':
+    owner => 'root',
+    group => 'root',
+    mode => 'u=rw,go=r',
+    notify => Service['nginx'],
+    content => template("${module_name}/nginx.erb"),
+  }
+
   service {'nginx':
     ensure => running,
     provider => upstart
   }
 
-  Package['nginx'] -> Exec['stop nginx'] -> File['/etc/init/nginx.conf']
+  Package['nginx'] -> Exec['stop nginx'] -> File['/etc/init/nginx.conf'] -> File['/etc/nginx/nginx.conf']
 
 }
