@@ -12,12 +12,10 @@ env PIDFILE=/var/run/nginx.pid
  
 # Needed to allow Nginx to start, however, the wrong PID will be tracked
 expect fork
-respawn
-respawn limit 10 5
 
 # Ensure nginx is shutdown gracefully
 # Upstart will be tracking the wrong PID so the following is needed to stop nginx
-post-stop exec start-stop-daemon --stop --pidfile $PIDFILE --name nginx --exec $DAEMON --signal QUIT
+pre-stop exec $DAEMON -s stop
  
 pre-start script
   $DAEMON -t
